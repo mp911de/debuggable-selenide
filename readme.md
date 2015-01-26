@@ -14,7 +14,7 @@ case that fails. In this case, a Swing windows comes up and prompts you what to 
 
 ## How is this project different?
 
-You are able to interact when `AsertionErrors` occur. You can retry the action (nice, when doing Ajax),
+You are able to interact when `AsertionError`s occur. You can retry the action (nice, when doing Ajax),
 continue (skip the error) or cancel the whole test run. You do not need to guess where to set a breakpoint in your test suite.
 As soon as exceptions occur, you'll be prompted how to proceed.
 
@@ -30,9 +30,9 @@ And you can inspect particular elements using Selenide's JQuery syntax (`$("sele
 
 The code is evaluated using Java's JvaScript engine. Currently available functions are:
 
- * $(...) and methods/functions of Selenide's $ result (e. g. `$(a").val()`)
- * $$(...) and methods/functions of Selenide's $$ (e. g. `$("a").size()`)
- * html()
+ * `$(...)` and methods/functions of Selenide's `$` result (e. g. `$(a").val()`)
+ * `$$(...)` and methods/functions of Selenide's `$$` (e. g. `$("a").size()`)
+ * `html()`
  * WebDriver methods exposed by `wd` variable (e. g. `wd.getPageSource()`)
 
 ## Components
