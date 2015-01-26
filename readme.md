@@ -18,15 +18,15 @@ You are able to interact when `AsertionErrors` occur. You can retry the action (
 continue (skip the error) or cancel the whole test run. You do not need to guess where to set a breakpoint in your test suite.
 As soon as exceptions occur, you'll be prompted how to proceed.
 
-<img src="images/debug-screen.png" align="left" width="400" >
+<img src="images/debug-screen.png" width="400" >
 
 You can retrieve the HTML page source as it is seen by the browser. 
 
-<img src="images/debug-evaluate.png" align="left" width="400" >
+<img src="images/debug-evaluate.png" width="400" >
 
 And you can inspect particular elements using Selenide's JQuery syntax (`$("selector")` or `$("selector")`).
 
-<img src="images/debug-evaluate-jquery-style.png" align="left" width="400" >
+<img src="images/debug-evaluate-jquery-style.png" width="400" >
 
 The code is evaluated using Java's JvaScript engine. Currently available functions are:
 
