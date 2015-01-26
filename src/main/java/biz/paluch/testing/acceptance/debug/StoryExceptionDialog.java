@@ -1,5 +1,13 @@
 package biz.paluch.testing.acceptance.debug;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -10,14 +18,15 @@ import javax.swing.text.PlainDocument;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
-import java.awt.*;
-import java.awt.event.*;
 
-import biz.paluch.testing.StackTraceFilter;
-import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.WebDriverRunner;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Layout;
 import org.openqa.selenium.WebDriver;
+
+import biz.paluch.testing.StackTraceFilter;
+
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.WebDriverRunner;
 
 public class StoryExceptionDialog extends JDialog {
 
@@ -131,6 +140,7 @@ public class StoryExceptionDialog extends JDialog {
         // Create keyboard accelerators for undo/redo actions (Ctrl+Z/Ctrl+Y)
         debugExpression.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK), UNDO_ACTION);
         debugExpression.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK), REDO_ACTION);
+        debugExpression.setText("html();");
 
         // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(new ActionListener() {
@@ -158,14 +168,20 @@ public class StoryExceptionDialog extends JDialog {
 
     private void onEvaluate(String expression) {
 
+        if (StringUtils.isBlank(expression)) {
+            setContent("");
+            return;
+        }
+
         ScriptEngineManager factory = new ScriptEngineManager();
         ScriptEngine engine = factory.getEngineByName("JavaScript");
 
+        // because of threading!
         WebDriverRunner.setWebDriver(webDriver);
         engine.put("selenide", new Selenide());
         engine.put("wd", webDriver);
 
-        String code = "function $(args){ return selenide.$(args);} function $$(args){ return selenide.$$(args);} function html() {return wd. getPageSource()} "
+        String code = "function $(args){ return selenide.$(args);} function $$(args){ return selenide.$$(args);} function html() {return wd.getPageSource()} "
                 + expression;
         try {
             String result = "" + engine.eval(code);

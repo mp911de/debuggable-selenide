@@ -1,8 +1,7 @@
 package biz.paluch.testing.acceptance;
 
+import biz.paluch.testing.acceptance.selenium.Browser;
 import org.junit.Test;
-
-import biz.paluch.testing.acceptance.selenium.IntegrationPropertyWebDriverProvider;
 
 /**
  * @author <a href="mailto:mpaluch@paluch.biz">Mark Paluch</a>
@@ -14,7 +13,7 @@ public class StandaloneRemoteLauncher {
 
         System.setProperty(AcceptanceProperties.DEBUG_MODE, "false");
         System.setProperty(AcceptanceProperties.SELENIUM_MODE, AcceptanceProperties.SELENIUM_MODE_REMOTE);
-        System.setProperty(AcceptanceProperties.SELENIUM_BROWSER, IntegrationPropertyWebDriverProvider.Browser.IE.getRemoteId());
+        System.setProperty(AcceptanceProperties.SELENIUM_BROWSER, Browser.IE.getRemoteId());
 
         new SeleniumJBehaveStories().run();
     }

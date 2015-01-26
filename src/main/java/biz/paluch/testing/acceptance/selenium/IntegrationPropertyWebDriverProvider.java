@@ -25,20 +25,6 @@ public class IntegrationPropertyWebDriverProvider extends DelegatingWebDriverPro
 
     private Properties properties;
 
-    public enum Browser {
-        CHROME("chrome"), FIREFOX("firefox"), HTMLUNIT("hmlunit"), IE("internet explorer"), SAFARI("safari");
-
-        private String remoteId;
-
-        Browser(String remoteId) {
-            this.remoteId = remoteId;
-        }
-
-        public String getRemoteId() {
-            return remoteId;
-        }
-    }
-
     public IntegrationPropertyWebDriverProvider(Properties properties) {
         this.properties = properties;
     }
@@ -46,7 +32,7 @@ public class IntegrationPropertyWebDriverProvider extends DelegatingWebDriverPro
     @Override
     public void initialize() {
 
-        Browser browser = Browser.valueOf(Browser.class,
+        Browser browser = Browser.find(
                 properties.getProperty(AcceptanceProperties.SELENIUM_BROWSER, "firefox").toUpperCase(usingLocale()));
         try {
             delegate.set(createDriver(browser));
@@ -55,6 +41,7 @@ public class IntegrationPropertyWebDriverProvider extends DelegatingWebDriverPro
             throw e;
         }
     }
+
 
     private WebDriver createDriver(Browser browser) {
         switch (browser) {

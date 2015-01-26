@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.log4j.Layout;
+import org.openqa.selenium.WebDriver;
 
 import biz.paluch.testing.acceptance.jbehave.JBehaveState;
 
@@ -41,14 +42,15 @@ public class DebugInvoationInterceptor implements MethodInterceptor {
                 builder.append("Arguments: ").append(Arrays.asList(invocation.getArguments())).append(Layout.LINE_SEP)
                         .append(Layout.LINE_SEP);
 
-                StoryExceptionDialog dialog = StoryExceptionDialog.open(builder.toString(), throwable,
-                        WebDriverRunner.getWebDriver());
+                WebDriver webDriver = WebDriverRunner.getWebDriver();
+                StoryExceptionDialog dialog = StoryExceptionDialog.open(builder.toString(), throwable, webDriver);
 
                 if (dialog.isDoRetry()) {
                     retry = true;
                 }
 
                 if (dialog.isDoCancel()) {
+                    webDriver.close();
                     System.exit(0);
                 }
             }
