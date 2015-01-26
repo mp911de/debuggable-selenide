@@ -6,7 +6,7 @@
 
 
     <groupId>biz.paluch.testing</groupId>
-    <artifactId>acceptance-selenium</artifactId>
+    <artifactId>debuggable-selenide</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>Debuggable Selenide Acceptance Tests</name>
 
