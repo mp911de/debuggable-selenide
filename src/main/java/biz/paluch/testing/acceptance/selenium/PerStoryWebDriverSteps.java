@@ -29,7 +29,6 @@ public class PerStoryWebDriverSteps extends WebDriverSteps implements Scope {
     public void beforeStory() throws Exception {
         try {
             driverProvider.initialize();
-            com.codeborne.selenide.Configuration.selectorMode = com.codeborne.selenide.Configuration.SelectorMode.Sizzle;
             WebDriverRunner.setWebDriver(driverProvider.get());
             WebDriverRunner.clearBrowserCache();
         } catch (Error e) {
