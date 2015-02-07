@@ -2,7 +2,6 @@ package biz.paluch.testing.acceptance;
 
 import java.io.File;
 
-import biz.paluch.testing.acceptance.selenium.Browser;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 
@@ -12,17 +11,39 @@ import org.junit.Test;
  */
 public class StandaloneLauncher {
 
+    public static void main(String[] args) throws Throwable {
+        new StandaloneLauncher().run();
+    }
+
     @Test
     public void run() throws Throwable {
 
-        System.setProperty(AcceptanceProperties.SELENIUM_BROWSER, Browser.FIREFOX.name());
-
-
         if (SystemUtils.IS_OS_MAC_OSX) {
-            File chromedriver = new File("/Applications/chromedriver");
+            File chromedriver = new File("drivers/mac/chrome/chromedriver");
             if (chromedriver.exists()) {
                 System.setProperty("webdriver.chrome.driver", chromedriver.getCanonicalPath());
-                System.setProperty(AcceptanceProperties.SELENIUM_BROWSER, Browser.CHROME.name());
+            }
+        }
+
+        if (SystemUtils.IS_OS_WINDOWS) {
+            File chromedriver = new File("drivers/win/chrome32/chromedriver.exe");
+            if (chromedriver.exists()) {
+                System.setProperty("webdriver.chrome.driver", chromedriver.getCanonicalPath());
+            }
+
+            int bits = Integer.getInteger("sun.arch.data.model", 32);
+            File iedriver = new File("drivers/win/ie" + bits + "/IEDriverServer.exe");
+            if (iedriver.exists()) {
+                System.setProperty("webdriver.ie.driver", iedriver.getCanonicalPath());
+            }
+        }
+
+        if (SystemUtils.IS_OS_LINUX) {
+            int bits = Integer.getInteger("sun.arch.data.model", 32);
+
+            File chromedriver = new File("drivers/linux/chrome" + bits + "/chromedriver");
+            if (chromedriver.exists()) {
+                System.setProperty("webdriver.chrome.driver", chromedriver.getCanonicalPath());
             }
         }
 
