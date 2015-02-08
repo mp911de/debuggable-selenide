@@ -19,10 +19,8 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
-import com.intellij.uiDesigner.core.GridConstraints;
-import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.log4j.Layout;
 import org.openqa.selenium.WebDriver;
 
@@ -30,9 +28,11 @@ import biz.paluch.testing.StackTraceFilter;
 
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
 
-public class StoryExceptionDialog extends JDialog
-{
+public class StoryExceptionDialog extends JDialog {
 
     private static final String UNDO_ACTION = "undo";
     private static final String REDO_ACTION = "redo";
@@ -55,32 +55,25 @@ public class StoryExceptionDialog extends JDialog
     private boolean doRetry;
     private WebDriver webDriver;
 
-    public StoryExceptionDialog()
-    {
+    public StoryExceptionDialog() {
         super();
     }
 
-    private void initialize()
-    {
+    private void initialize() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonContinue);
-        buttonRetry.addActionListener(new ActionListener()
-        {
+        buttonRetry.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 onRetry();
             }
         });
 
-        buttonContinue.addActionListener(new ActionListener()
-        {
+        buttonContinue.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e)
-            {
-                if (debugExpression.hasFocus())
-                {
+            public void actionPerformed(ActionEvent e) {
+                if (debugExpression.hasFocus()) {
                     onEvaluate(debugExpression.getText());
                     return;
                 }
@@ -88,20 +81,16 @@ public class StoryExceptionDialog extends JDialog
             }
         });
 
-        buttonCancel.addActionListener(new ActionListener()
-        {
+        buttonCancel.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 onCancel();
             }
         });
 
-        buttonEvaluate.addActionListener(new ActionListener()
-        {
+        buttonEvaluate.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 onEvaluate(debugExpression.getText());
             }
         });
@@ -110,11 +99,9 @@ public class StoryExceptionDialog extends JDialog
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        addWindowListener(new WindowAdapter()
-        {
+        addWindowListener(new WindowAdapter() {
 
-            public void windowClosing(WindowEvent e)
-            {
+            public void windowClosing(WindowEvent e) {
                 onCancel();
             }
         });
@@ -124,45 +111,31 @@ public class StoryExceptionDialog extends JDialog
         debugExpression.setDocument(new PlainDocument());
 
         // Add listener for undoable events
-        debugExpression.getDocument().addUndoableEditListener(new UndoableEditListener()
-        {
-            public void undoableEditHappened(UndoableEditEvent pEvt)
-            {
+        debugExpression.getDocument().addUndoableEditListener(new UndoableEditListener() {
+            public void undoableEditHappened(UndoableEditEvent pEvt) {
                 undoMgr.addEdit(pEvt.getEdit());
             }
         });
 
         // Add undo/redo actions
-        debugExpression.getActionMap().put(UNDO_ACTION, new AbstractAction(UNDO_ACTION)
-        {
-            public void actionPerformed(ActionEvent pEvt)
-            {
-                try
-                {
-                    if (undoMgr.canUndo())
-                    {
+        debugExpression.getActionMap().put(UNDO_ACTION, new AbstractAction(UNDO_ACTION) {
+            public void actionPerformed(ActionEvent pEvt) {
+                try {
+                    if (undoMgr.canUndo()) {
                         undoMgr.undo();
                     }
-                }
-                catch (CannotUndoException e)
-                {
+                } catch (CannotUndoException e) {
                     e.printStackTrace();
                 }
             }
         });
-        debugExpression.getActionMap().put(REDO_ACTION, new AbstractAction(REDO_ACTION)
-        {
-            public void actionPerformed(ActionEvent pEvt)
-            {
-                try
-                {
-                    if (undoMgr.canRedo())
-                    {
+        debugExpression.getActionMap().put(REDO_ACTION, new AbstractAction(REDO_ACTION) {
+            public void actionPerformed(ActionEvent pEvt) {
+                try {
+                    if (undoMgr.canRedo()) {
                         undoMgr.redo();
                     }
-                }
-                catch (CannotRedoException e)
-                {
+                } catch (CannotRedoException e) {
                     e.printStackTrace();
                 }
             }
@@ -174,39 +147,32 @@ public class StoryExceptionDialog extends JDialog
         debugExpression.setText("html();");
 
         // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener()
-        {
+        contentPane.registerKeyboardAction(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 onCancel();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
-    private void onOK()
-    {
+    private void onOK() {
         doContinue = true;
         dispose();
     }
 
-    private void onCancel()
-    {
+    private void onCancel() {
         doCancel = true;
         dispose();
     }
 
-    private void onRetry()
-    {
+    private void onRetry() {
         doRetry = true;
         dispose();
     }
 
-    private void onEvaluate(String expression)
-    {
+    private void onEvaluate(String expression) {
 
-        if (StringUtils.isBlank(expression))
-        {
+        if (StringUtils.isBlank(expression)) {
             setContent("");
             return;
         }
@@ -219,34 +185,52 @@ public class StoryExceptionDialog extends JDialog
         engine.put("selenide", new Selenide());
         engine.put("wd", webDriver);
 
-        String code =
-                "function $(args){ return selenide.$(args);} function $$(args){ return selenide.$$(args);} function html() {return wd.getPageSource()} " +
-                        expression;
-        try
-        {
+        String initializer = getInitializer();
+
+        String code = initializer + expression;
+        try {
             String result = "" + engine.eval(code);
             setContent(result);
-        }
-        catch (ScriptException e)
-        {
+        } catch (ScriptException e) {
             exceptionOccured(expression, e);
         }
     }
 
-    public static StoryExceptionDialog open(String label, Throwable exception, WebDriver webDriver)
-    {
+    /**
+     * Convenience functions (html(), $(...) and $$(...) handled by this initializer.
+     * 
+     * @return
+     */
+    private String getInitializer() {
+
+        String java67 = "function $(args){ return selenide.$(args);} " + "function $$(args){ return selenide.$(args);} "
+                + "function html() {return wd.getPageSource()} ";
+
+        String java8 = "function $(args){ return Java.type(\"" + Selenide.class.getName() + "\").$(args);} "
+                + "function $$(args){ return Java.type(\"" + Selenide.class.getName() + "\").$(args);} "
+                + "function html() {return wd.getPageSource()} ";
+
+        if (SystemUtils.IS_JAVA_1_6 || SystemUtils.IS_JAVA_1_7) {
+            return java67;
+        }
+        if (SystemUtils.IS_JAVA_1_8) {
+            return java8;
+        }
+
+        throw new UnsupportedOperationException("Currently only Java 6/7/8 supported. Your version is  "
+                + SystemUtils.JAVA_SPECIFICATION_VERSION);
+    }
+
+    public static StoryExceptionDialog open(String label, Throwable exception, WebDriver webDriver) {
         StoryExceptionDialog dialog = new StoryExceptionDialog();
         dialog.initialize();
         dialog.webDriver = webDriver;
         dialog.exceptionOccured(label, exception);
 
         Dimension dialogSize = new Dimension(lastWidth, lastHeight);
-        if (lastX != -1 && lastY != -1)
-        {
+        if (lastX != -1 && lastY != -1) {
             dialog.setLocation(lastX, lastY);
-        }
-        else
-        {
+        } else {
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
             int halfScreenHeight = screenSize.height / 2;
             int halfScreenWidth = screenSize.width / 2;
@@ -271,32 +255,27 @@ public class StoryExceptionDialog extends JDialog
         return dialog;
     }
 
-    public void exceptionOccured(String label, Throwable exception)
-    {
+    public void exceptionOccured(String label, Throwable exception) {
         StringBuilder buffer = new StringBuilder();
         buffer.append(label).append(Layout.LINE_SEP);
         buffer.append(StackTraceFilter.getFilteredStackTrace(exception));
         setContent(buffer);
     }
 
-    private void setContent(CharSequence buffer)
-    {
+    private void setContent(CharSequence buffer) {
         exceptionPanel.setText(buffer.toString());
         exceptionPanel.setEditable(false);
     }
 
-    public boolean isDoContinue()
-    {
+    public boolean isDoContinue() {
         return doContinue;
     }
 
-    public boolean isDoCancel()
-    {
+    public boolean isDoCancel() {
         return doCancel;
     }
 
-    public boolean isDoRetry()
-    {
+    public boolean isDoRetry() {
         return doRetry;
     }
 
@@ -306,13 +285,13 @@ public class StoryExceptionDialog extends JDialog
         // DO NOT EDIT OR ADD ANY CODE HERE!
         $$$setupUI$$$();
     }
-    /** Method generated by IntelliJ IDEA GUI Designer
-     * >>> IMPORTANT!! <<<
-     * DO NOT edit this method OR call it in your code!
+
+    /**
+     * Method generated by IntelliJ IDEA GUI Designer >>> IMPORTANT!! <<< DO NOT edit this method OR call it in your code!
+     * 
      * @noinspection ALL
      */
-    private void $$$setupUI$$$()
-    {
+    private void $$$setupUI$$$() {
         contentPane = new JPanel();
         contentPane.setLayout(new GridBagLayout());
         final JPanel panel1 = new JPanel();
@@ -329,19 +308,17 @@ public class StoryExceptionDialog extends JDialog
         label1.setText("Exception occured");
         label1.setToolTipText("Supports html(), $(\"...\") and $$(\"...)");
         panel1.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-                                               GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null,
-                                               new Dimension(170, 16), null, 0, false));
+                GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(170, 16), null, 0,
+                false));
         buttonEvaluate = new JButton();
         buttonEvaluate.setText("Evaluate");
-        panel1.add(buttonEvaluate,
-                   new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
-                                       GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                                       GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel1.add(buttonEvaluate, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         debugExpression = new JTextField();
-        panel1.add(debugExpression,
-                   new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
-                                       GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
-                                       new Dimension(150, -1), null, 0, false));
+        panel1.add(debugExpression, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST,
+                GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
+                new Dimension(150, -1), null, 0, false));
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         gbc = new GridBagConstraints();
@@ -352,14 +329,11 @@ public class StoryExceptionDialog extends JDialog
         gbc.fill = GridBagConstraints.BOTH;
         contentPane.add(panel2, gbc);
         final JScrollPane scrollPane1 = new JScrollPane();
-        panel2.add(scrollPane1,
-                   new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
-                                       GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW,
-                                       GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW,
-                                       null, null, null, 0, false));
+        panel2.add(scrollPane1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         exceptionPanel = new JTextPane();
-        exceptionPanel.setFont(
-                new Font("Monospaced", exceptionPanel.getFont().getStyle(), exceptionPanel.getFont().getSize()));
+        exceptionPanel.setFont(new Font("Monospaced", exceptionPanel.getFont().getStyle(), exceptionPanel.getFont().getSize()));
         exceptionPanel.setMargin(new Insets(0, 0, 0, 0));
         exceptionPanel.setText("");
         scrollPane1.setViewportView(exceptionPanel);
@@ -372,30 +346,26 @@ public class StoryExceptionDialog extends JDialog
         contentPane.add(panel3, gbc);
         buttonContinue = new JButton();
         buttonContinue.setText("Continue");
-        panel3.add(buttonContinue,
-                   new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
-                                       GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                                       GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel3.add(buttonContinue, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         buttonRetry = new JButton();
         buttonRetry.setText("Retry");
-        panel3.add(buttonRetry,
-                   new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
-                                       GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                                       GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel3.add(buttonRetry, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED,
+                null, null, null, 0, false));
         buttonCancel = new JButton();
         buttonCancel.setText("Cancel");
-        panel3.add(buttonCancel,
-                   new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
-                                       GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                                       GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel3.add(buttonCancel, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        panel3.add(spacer1,
-                   new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
-                                       GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        panel3.add(spacer1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
     }
+
     /** @noinspection ALL */
-    public JComponent $$$getRootComponent$$$()
-    {
+    public JComponent $$$getRootComponent$$$() {
         return contentPane;
     }
 }
