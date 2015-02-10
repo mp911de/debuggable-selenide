@@ -89,7 +89,7 @@ Import it into IntelliJ IDEA, build and start the class `biz.paluch.testing.acce
 
 Issue
 
-`$ mvn clean install exec:java -Dexec.mainClass=biz.paluch.testing.acceptance.StandaloneLauncher`
+`$ mvn clean install exec:java -Djava.awt.headless=false -Dexec.mainClass=biz.paluch.testing.acceptance.StandaloneLauncher`
 
 on the command line.
 
@@ -99,15 +99,15 @@ right versions for you and set the system properties for Selenium.
 
 Using **Google Chrome**
 
-`$ mvn clean install exec:java -Dexec.mainClass=biz.paluch.testing.acceptance.StandaloneLauncher -Dselenium.browser=chrome`
+`$ mvn clean install exec:java -Djava.awt.headless=false -Dexec.mainClass=biz.paluch.testing.acceptance.StandaloneLauncher -Dselenium.browser=chrome`
 
 Using **Microsoft Internet Explorer**
 
-`$ mvn clean install exec:java -Dexec.mainClass=biz.paluch.testing.acceptance.StandaloneLauncher -Dselenium.browser=ie`
+`$ mvn clean install exec:java -Djava.awt.headless=false -Dexec.mainClass=biz.paluch.testing.acceptance.StandaloneLauncher -Dselenium.browser=ie`
 
 Using **Mozilla Firefox**
 
-`$ mvn clean install exec:java -Dexec.mainClass=biz.paluch.testing.acceptance.StandaloneLauncher -Dselenium.browser=firefox`
+`$ mvn clean install exec:java -Djava.awt.headless=false -Dexec.mainClass=biz.paluch.testing.acceptance.StandaloneLauncher -Dselenium.browser=firefox`
 
 
 ### Running with an IDE other than IntelliJ IDEA
